@@ -1,0 +1,14 @@
+# Formula 1: assignment example; expected prefix is >*PQ~R
+((P*Q)>~R)
+
+# Formula 2: disjunction of a negation and an atom
+(~P+Q)
+
+# Formula 3: implies a conjunction
+(P>(Q*R))
+
+# Formula 4: multi-character atoms are supported and prefix tokens are space-separated
+((bird_can_fly*has_wings)>not_a_penguin)
+
+# Malformed example; this should produce a clear error instead of a wrong tree
+((P*Q)>~R))

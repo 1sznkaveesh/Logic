@@ -1,0 +1,25 @@
+# Doxygen configuration for CS F214 Logic in CS, Assignment 1 Part A.
+PROJECT_NAME           = "CS F214 Logic in CS - Assignment 1 Part A"
+PROJECT_BRIEF          = "Propositional logic parse-tree algorithms and Task 6 analysis"
+OUTPUT_DIRECTORY       = docs/api
+INPUT                  = README.md src/logic_assignment.c
+FILE_PATTERNS          = *.c *.h *.md
+RECURSIVE               = NO
+EXTRACT_ALL             = YES
+EXTRACT_STATIC          = YES
+EXTRACT_PRIVATE         = YES
+OPTIMIZE_OUTPUT_FOR_C   = YES
+MARKDOWN_SUPPORT        = YES
+GENERATE_HTML           = YES
+HTML_OUTPUT             = html
+GENERATE_LATEX          = NO
+GENERATE_MAN            = NO
+GENERATE_RTF            = NO
+GENERATE_XML            = NO
+WARNINGS                = YES
+WARN_IF_UNDOCUMENTED    = NO
+WARN_IF_DOC_ERROR       = YES
+QUIET                   = YES
+TAB_SIZE                = 4
+JAVADOC_AUTOBRIEF       = YES
+USE_MDFILE_AS_MAINPAGE  = README.md

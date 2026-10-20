@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS F214 — Part A | Results and Algorithm Analysis</title>
+<style>
+:root{--ink:#17212b;--muted:#546273;--line:#d9e1e8;--paper:#ffffff;--wash:#f4f7fa;--navy:#173a5e;--teal:#167d85;--gold:#e6ad42;--code:#101d2a;--codeink:#e8f0f8}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--wash);color:var(--ink);font:16px/1.65 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}.hero{background:linear-gradient(135deg,#102d49,#1c5d75);color:#fff;padding:56px 22px 48px;border-bottom:5px solid var(--gold)}.wrap{max-width:1080px;margin:auto}.eyebrow{font-size:.8rem;text-transform:uppercase;letter-spacing:.16em;font-weight:700;color:#b7e4e6}.hero h1{font-size:clamp(2rem,4.6vw,3.5rem);line-height:1.12;max-width:800px;margin:12px 0}.hero p{max-width:750px;color:#e4edf4;margin:16px 0 0}.hero .meta{font-size:.92rem;color:#c4d8e5}.layout{display:grid;grid-template-columns:245px minmax(0,1fr);gap:24px;max-width:1080px;margin:28px auto;padding:0 18px}.side{align-self:start;position:sticky;top:16px;background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:18px}.side strong{display:block;margin-bottom:8px}.side a{display:block;text-decoration:none;color:var(--navy);padding:5px 0;font-size:.92rem}.side a:hover{text-decoration:underline}.content{min-width:0}.card{background:var(--paper);border:1px solid var(--line);border-radius:15px;padding:25px;margin-bottom:20px;box-shadow:0 4px 16px rgba(23,49,72,.035)}h2{font-size:1.45rem;margin:0 0 12px;color:var(--navy)}h3{font-size:1.05rem;margin:22px 0 7px;color:var(--navy)}p{margin:8px 0 12px}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.mini{border:1px solid var(--line);border-radius:11px;padding:15px;background:#fbfdff}.mini b{display:block;font-size:1rem;color:var(--navy)}.mini span{display:block;color:var(--muted);font-size:.9rem;margin-top:3px}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#edf2f6;padding:2px 5px;border-radius:5px;color:#183f5d}pre{overflow:auto;padding:18px;border-radius:10px;background:var(--code);color:var(--codeink);font:14px/1.55 ui-monospace,SFMono-Regular,Consolas,monospace}pre code{background:none;color:inherit;padding:0}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.93rem}th,td{text-align:left;padding:10px 11px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#eef4f8;color:var(--navy)}.pill{display:inline-block;border:1px solid #c6e2e3;background:#edf8f8;color:#135b61;border-radius:999px;padding:2px 9px;font-size:.8rem;font-weight:700;margin:2px 5px 2px 0}.note{border-left:4px solid var(--teal);padding:12px 15px;background:#f0f8f8;border-radius:0 8px 8px 0;margin:14px 0}.warning{border-left-color:var(--gold);background:#fff8e9}.footer{max-width:1080px;padding:0 18px 36px;margin:auto;color:var(--muted);font-size:.88rem}.footer a{color:var(--navy)}@media(max-width:800px){.layout{grid-template-columns:1fr}.side{position:static}.side a{display:inline-block;margin-right:12px}.grid{grid-template-columns:1fr}.card{padding:19px}.hero{padding-top:40px}}
+</style>
+</head>
+<body>
+<header class="hero"><div class="wrap">
+<div class="eyebrow">BITS Pilani · Hyderabad Campus</div>
+<h1>Logic in CS — Assignment 1, Part A</h1>
+<p>Parse-tree implementation for propositional logic, with conversion, traversal, height, evaluation, and DIMACS CNF benchmark import.</p>
+<div class="meta">C11 · GCC / Make · Doxygen-ready source · HTML algorithm report</div>
+</div></header>
+<div class="layout">
+<nav class="side" aria-label="Page sections"><strong>On this page</strong>
+<a href="#overview">Overview</a><a href="#tasks">Task coverage</a><a href="#sample">Sample result</a><a href="#analysis">Complexity analysis</a><a href="#dimacs">DIMACS dataset</a><a href="#usage">Build and documentation</a><a href="#limits">Scope and limits</a><a href="#references">References</a>
+</nav>
+<main class="content">
+<section class="card" id="overview"><h2>Overview</h2>
+<p>The program stores a propositional formula as a rooted parse tree and runs the five required algorithmic tasks. It accepts the assignment's operator symbols: <code>~</code> for NOT, <code>+</code> for OR, <code>*</code> for AND, and <code>&gt;</code> for implication.</p>
+<div class="grid"><div class="mini"><b>Task 1 · Infix → prefix</b><span>Validates the input and emits prefix notation.</span></div><div class="mini"><b>Task 2 · Prefix → tree</b><span>Reconstructs the tree from the prefix tokens.</span></div><div class="mini"><b>Task 3 · Traversals</b><span>In-order, pre-order, and post-order, both recursive and iterative.</span></div><div class="mini"><b>Task 4 · Height</b><span>Recursive height and breadth-first iterative height.</span></div><div class="mini"><b>Task 5 · Evaluation</b><span>Evaluates the formula for each assignment and prints its truth table.</span></div><div class="mini"><b>Task 6 · Documentation</b><span>This HTML analysis page plus Doxygen comments and configuration.</span></div></div>
+</section>
+<section class="card" id="tasks"><h2>Implementation decisions</h2>
+<h3>Input and tokenization</h3><p>The assignment guarantees a well-formed, fully parenthesized infix formula, so a full general-purpose parser is not needed. The input is split into tokens: an atom may be a multi-character name (a letter or underscore followed by letters, digits or underscores), while <code>~ + * &gt;</code> and parentheses are one-character tokens. Spaces are ignored anywhere between tokens, and parentheses are checked, so an accidental extra bracket is reported as invalid input instead of becoming a false proposition in the tree.</p>
+<h3>Infix to prefix (Task 1)</h3><p>The converter follows the Scanftree method, applied to tokens instead of single characters: reverse the token sequence, swap <code>(</code> with <code>)</code>, produce a postfix sequence with a shunting-yard operator stack, then reverse that sequence to obtain the prefix expression. When every token is one character the prefix is printed compactly (<code>&gt;*PQ~R</code>); if any atom name is longer, tokens are separated by spaces so that they stay readable. The prefix is stored as a token list, and Task&nbsp;2 builds the tree from exactly that list, so compact single-letter prefixes like <code>&gt;*PQ~R</code> cannot be misread as multi-letter names.</p>
+<h3>Tree convention</h3><p>Binary operators have left and right children. A unary NOT node has its operand as its right child. In-order traversal adds parentheses around binary subformulas, preserving their structure.</p>
+<h3>Truth values</h3><p>Atoms are assigned <code>F</code> or <code>T</code>. OR is Boolean disjunction; AND is Boolean conjunction; implication evaluates as <code>(not P) or Q</code>. The unique variables are collected once and assigned indexes so each leaf's truth lookup is constant-time during evaluation.</p>
+</section>
+<section class="card" id="sample"><h2>Sample run: <code>((P*Q)&gt;~R)</code></h2>
+<p>This formula illustrates the expected output format. The prefix expression is <code>&gt;*PQ~R</code>; both height functions return 2.</p>
+<div><span class="pill">Prefix: <code>&gt;*PQ~R</code></span><span class="pill">Tree nodes: 6</span><span class="pill">Height: 2</span><span class="pill">Distinct atoms: 3</span></div>
+<pre><code>Prefix expression: &gt;*PQ~R
+
+Inorder (recursive)   : ((P*Q)&gt;~R)
+Inorder (iterative)   : ((P*Q)&gt;~R)
+
+Preorder (recursive)  : &gt; * P Q ~ R
+Preorder (iterative)  : &gt; * P Q ~ R
+
+Postorder (recursive) : P Q * R ~ &gt;
+Postorder (iterative) : P Q * R ~ &gt;
+
+Height (recursive)    : 2
+Height (iterative)    : 2
+
+Distinct atoms        : 3</code></pre>
+<h3>Truth table</h3>
+<div class="table-wrap"><table><thead><tr><th>P</th><th>Q</th><th>R</th><th>Result</th></tr></thead><tbody>
+<tr><td>F</td><td>F</td><td>F</td><td>T</td></tr><tr><td>F</td><td>F</td><td>T</td><td>T</td></tr><tr><td>F</td><td>T</td><td>F</td><td>T</td></tr><tr><td>F</td><td>T</td><td>T</td><td>T</td></tr><tr><td>T</td><td>F</td><td>F</td><td>T</td></tr><tr><td>T</td><td>F</td><td>T</td><td>T</td></tr><tr><td>T</td><td>T</td><td>F</td><td>T</td></tr><tr><td>T</td><td>T</td><td>T</td><td>F</td></tr>
+</tbody></table></div>
+<p class="muted">Reason check: the formula is false exactly when P and Q are both true and R is true, because the implication's consequent is then false.</p>
+</section>
+<section class="card" id="analysis"><h2>Algorithm and complexity analysis</h2>
+<p>Let <code>m</code> be the number of characters/tokens in the input formula, <code>n</code> the number of parse-tree nodes, <code>h</code> the tree height, <code>v</code> the number of distinct atoms, and <code>w</code> the maximum tree width.</p>
+<div class="table-wrap"><table><thead><tr><th>Operation</th><th>Time</th><th>Auxiliary memory</th><th>Notes</th></tr></thead><tbody>
+<tr><td>Infix → prefix</td><td>O(m)</td><td>O(m)</td><td>Tokenizes the input, then reverses, swaps parentheses and runs the shunting-yard step over token arrays.</td></tr>
+<tr><td>Prefix → tree</td><td>O(m)</td><td>O(n)</td><td>Each prefix token creates one tree node.</td></tr>
+<tr><td>Recursive traversals</td><td>O(n)</td><td>O(h) call stack</td><td>Each node is visited once.</td></tr>
+<tr><td>Iterative in-order / pre-order</td><td>O(n)</td><td>O(n) worst case</td><td>Explicit stack replaces recursive calls.</td></tr>
+<tr><td>Iterative post-order</td><td>O(n)</td><td>O(n)</td><td>Uses two stacks.</td></tr>
+<tr><td>Recursive height</td><td>O(n)</td><td>O(h)</td><td>Returns −1 for an empty tree and 0 for a leaf.</td></tr>
+<tr><td>Iterative height (BFS)</td><td>O(n)</td><td>O(w), up to O(n)</td><td>Processes the tree one level at a time.</td></tr>
+<tr><td>Collect variable names</td><td>O(n·v) worst case</td><td>O(v)</td><td>Linear search over the atom names collected so far; negligible for the formula sizes used in Part A.</td></tr>
+<tr><td>Evaluate one assignment</td><td>O(n)</td><td>O(h)</td><td>Evaluates child formulas before their parent operator.</td></tr>
+<tr><td>Complete truth table</td><td>O(2<sup>v</sup> · n)</td><td>O(v + h)</td><td>Exponential in the number of atoms; output size is also exponential.</td></tr>
+<tr><td>DIMACS import/tree construction</td><td>O(L + C)</td><td>O(L + C)</td><td>L literal occurrences, C clauses; builds balanced OR/AND subtrees.</td></tr>
+</tbody></table></div>
+<div class="note"><strong>Interpretation.</strong> The standard tree algorithms are linear in the number of nodes. Truth-table generation is the exception: every one of the 2<sup>v</sup> assignments must be evaluated, so the number of rows becomes impractical for benchmark-sized formulas.</div>
+</section>
+<section class="card" id="dimacs"><h2>Using SAT Competition benchmarks</h2>
+<p>The project supports a separate <code>--dimacs FILE</code> mode. DIMACS CNF encodes clauses as integer literals: positive integers are atoms, negative integers are their negations, and zero ends a clause. The <code>p cnf V C</code> header gives the declared variable and clause counts, while full-line <code>c</code> comments are ignored.</p>
+<p>A clause is built as an OR subtree; the formula is the AND of its clauses. The implementation combines each group into balanced binary trees, reducing the height of the generated representation compared with a fully left-associated chain.</p>
+<pre><code>./logic_assignment --dimacs examples/sample.cnf</code></pre>
+<div class="note warning"><strong>Benchmark caution.</strong> The original SAT 2002 archive is large and is not bundled with this code. Try the included three-variable example first, then load a real benchmark file. For more than 16 occurring atoms, printing a complete truth table is deliberately skipped; attempting it would create at least 65,536 rows and quickly grow to millions or more.</div>
+</section>
+<section class="card" id="usage"><h2>Build and documentation</h2>
+<p>Build the C11 program from the project root with GNU Make, or compile the source directly.</p>
+<pre><code>make
+./logic_assignment
+./logic_assignment --dimacs examples/sample.cnf</code></pre>
+<p>The source includes Doxygen-style comments. Generate the API reference from the project root with:</p>
+<pre><code>doxygen Doxyfile</code></pre>
+<p>Open <code>docs/api/html/index.html</code> for the generated API reference. This page is the hand-authored overview and complexity analysis. The Task 6 results page is <code>analysis_report.html</code>; run the executable from a separate working directory if you want to preserve the submitted report.</p>
+</section>
+<section class="card" id="limits"><h2>Scope and limitations</h2>
+<ul>
+<li>Atom names consist of a letter or underscore followed by letters, digits, or underscores; spaces may appear between tokens but not inside a name. The input is expected to be fully parenthesized, as the assignment specifies; the converter also applies the usual precedence when parentheses around binary connectives are omitted.</li>
+<li>The program constructs/inspects formulas; it is not a SAT solver and does not search for a satisfying assignment independently of truth-table enumeration.</li>
+<li>Truth tables are printed only up to 16 distinct atoms to prevent unbounded exponential output.</li>
+<li>DIMACS formulas are imported directly as CNF trees. A huge benchmark is not expanded into an infix string first, which avoids unnecessary memory use and avoids confusing DIMACS syntax with the assignment's symbolic infix syntax.</li>
+</ul>
+</section>
+<section class="card" id="references"><h2>References</h2>
+<ol>
+<li>CS F214 Logic in CS, Assignment 1, Part A specification (course PDF).</li>
+<li><a href="https://satcompetition.github.io/">International SAT Competition web page</a>.</li>
+<li><a href="https://satisfiability.org/competition/2002/submittedbenchs.html">SAT Competition 2002 benchmark index</a> and <a href="https://satisfiability.org/competition/2002/sc2002benchs.zip">benchmark ZIP</a>.</li>
+<li><a href="https://jix.github.io/varisat/manual/0.2.0/formats/dimacs.html">Varisat manual: DIMACS CNF format</a>.</li>
+<li><a href="https://scanftree.com/Data_Structure/infix-to-prefix">Scanftree: Infix to Prefix Conversion</a>.</li>
+</ol>
+<p class="muted">The infix conversion follows the reverse-and-stack method of the Scanftree reference, applied to tokens so that multi-character atom names are preserved.</p>
+</section>
+</main></div>
+<footer class="footer">CS F214 — Logic in CS, Assignment 1, Part A: results and analysis. The submitted Task 6 report is <a href="../analysis_report.html">analysis_report.html</a>. Running the program writes a fresh report to its current working directory.</footer>
+</body></html>
