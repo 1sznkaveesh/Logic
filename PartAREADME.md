@@ -12,7 +12,7 @@ No third-party C libraries are required.
 
 ## Build
 
-Run from the project root:
+Run from the project root (from /Logic_Assignment_PartA open terminal):
 
 ```bash
 make
