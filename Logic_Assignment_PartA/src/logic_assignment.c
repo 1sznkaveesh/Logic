@@ -1,24 +1,3 @@
-/*
- Stores a propositional logic formula as a binary parse tree and implements
- all Part-A tasks with a compact, assignment-focused implementation
- The main documentation page is the project README (see Doxyfile)
- Two ways to run the program:
-   - `./logic_assignment`                 : type a fully parenthesized infix
-                                            formula, e.g. `((P*Q)>~R)`
-                                            (Tasks 1 to 6)
-  - `./logic_assignment --dimacs FILE.cnf`: load a DIMACS CNF file
-                                            (SAT benchmark, Tasks 3 to 6)
-
- Task 1 (infix -> prefix) tokenizes the input and uses the idea from scanftree.com/Data_Structure/infix-to-prefix :
-      1. Reverse the tokens
-      2. Swap every '(' with ')' and vice versa
-      3. Convert this token sequence to postfix using an operator stack
-      4. Reverse the postfix tokens -> this is the prefix expression
- 
-Task 6 (analysis): every algorithm is timed, its extra memory use is
-measured, and the results are printed and saved in analysis_report.html
- */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
