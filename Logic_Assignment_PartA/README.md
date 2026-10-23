@@ -119,7 +119,3 @@ CSF214_Assignment1_PartA/
 ├── README.md
 └── .gitignore
 ```
-
-## Submission notes
-
-The submission includes the C source, Doxygen configuration, hand-authored documentation page, sample inputs, and Task 6 HTML analysis report. Generate the Doxygen API reference with `doxygen Doxyfile`; the generated pages are placed in `docs/api/html/`. The program overwrites `analysis_report.html` whenever it is run from the project root.
